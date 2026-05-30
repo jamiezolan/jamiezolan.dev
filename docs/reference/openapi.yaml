@@ -1,0 +1,219 @@
+openapi: 3.1.0
+info:
+  title: Pudgy Payments API
+  version: "1.0.0"
+  description: |
+    A sample REST API for accepting payments. All amounts are in the
+    smallest currency unit (e.g. cents). Timestamps are ISO 8601 (UTC).
+  contact:
+    name: Pudgy Docs
+    url: https://docs.pudgypay.dev
+servers:
+  - url: https://api.pudgypay.dev/v1
+    description: Production
+security:
+  - bearerAuth: []
+tags:
+  - name: Charges
+    description: Create and manage payments.
+  - name: Customers
+    description: Store customers and reusable payment methods.
+  - name: Refunds
+    description: Return funds for a charge.
+paths:
+  /charges:
+    post:
+      tags: [Charges]
+      summary: Create a charge
+      description: Charges a card or token a given amount. Send an `Idempotency-Key` header to make the request safe to retry.
+      operationId: createCharge
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChargeCreate"
+      responses:
+        "200":
+          description: The charge was created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Charge"
+        "402":
+          description: The card was declined.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      tags: [Charges]
+      summary: List charges
+      operationId: listCharges
+      parameters:
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 100, default: 25 }
+        - name: starting_after
+          in: query
+          description: A cursor (`next_cursor`) from a previous page.
+          schema: { type: string }
+      responses:
+        "200":
+          description: A page of charges.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChargeList"
+  /charges/{id}:
+    get:
+      tags: [Charges]
+      summary: Retrieve a charge
+      operationId: getCharge
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: The charge.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Charge"
+        "404":
+          description: No charge with that ID.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+  /refunds:
+    post:
+      tags: [Refunds]
+      summary: Create a refund
+      operationId: createRefund
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [charge]
+              properties:
+                charge:
+                  type: string
+                  description: The ID of the charge to refund.
+                amount:
+                  type: integer
+                  description: Amount to refund in the smallest currency unit. Defaults to the full charge.
+      responses:
+        "200":
+          description: The refund.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Refund" }
+  /customers:
+    post:
+      tags: [Customers]
+      summary: Create a customer
+      operationId: createCustomer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, format: email }
+                source:
+                  type: string
+                  description: A token to attach as the customer's default payment method.
+      responses:
+        "200":
+          description: The customer.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Customer" }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Send your secret API key as a bearer token.
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      description: A unique key (e.g. a UUID) that makes the request safe to retry.
+      schema: { type: string }
+  schemas:
+    ChargeCreate:
+      type: object
+      required: [amount, currency, source]
+      properties:
+        amount:
+          type: integer
+          example: 2000
+          description: Amount in the smallest currency unit.
+        currency:
+          type: string
+          example: usd
+        source:
+          type: string
+          example: tok_visa
+          description: A token or card ID to charge.
+        description:
+          type: string
+    Charge:
+      type: object
+      properties:
+        id: { type: string, example: ch_3Nf8k2eZvKYlo2C1 }
+        object: { type: string, example: charge }
+        amount: { type: integer, example: 2000 }
+        currency: { type: string, example: usd }
+        status:
+          type: string
+          enum: [succeeded, pending, failed]
+        paid: { type: boolean }
+        description: { type: string }
+        created: { type: string, format: date-time }
+    ChargeList:
+      type: object
+      properties:
+        object: { type: string, example: list }
+        data:
+          type: array
+          items: { $ref: "#/components/schemas/Charge" }
+        has_more: { type: boolean }
+        next_cursor: { type: string }
+    Refund:
+      type: object
+      properties:
+        id: { type: string, example: re_1P2x }
+        object: { type: string, example: refund }
+        charge: { type: string }
+        amount: { type: integer }
+        status:
+          type: string
+          enum: [succeeded, pending, failed]
+    Customer:
+      type: object
+      properties:
+        id: { type: string, example: cus_9aZ }
+        object: { type: string, example: customer }
+        email: { type: string, format: email }
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            type: { type: string, example: card_error }
+            code: { type: string, example: card_declined }
+            message: { type: string, example: The card was declined. }
+            param: { type: string }
+            doc_url: { type: string }

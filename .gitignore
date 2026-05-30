@@ -1,0 +1,18 @@
+# Build output — never commit generated artifacts to a docs-as-code repo.
+site/
+.cache/
+
+# Python
+__pycache__/
+.venv/
+venv/
+
+# Vale downloaded styles
+styles/Microsoft/
+styles/Google/
+styles/RedHat/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/

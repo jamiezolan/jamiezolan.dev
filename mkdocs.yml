@@ -1,0 +1,94 @@
+site_name: Pudgy Payments
+site_description: Developer documentation for the Pudgy Payments API — charges, customers, refunds, webhooks, and security.
+site_author: Jamie (sample portfolio site)
+site_url: https://jamiezolan.dev/
+
+# Repo links surface an "edit this page" button — a visible docs-as-code signal.
+# Replace <your-username> with your GitHub handle once the repo exists.
+repo_name: your-username/jamiezolan.dev
+repo_url: https://github.com/your-username/jamiezolan.dev
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.instant
+    - navigation.tracking
+    - navigation.indexes
+    - toc.follow
+    - content.code.copy
+    - content.code.annotate
+    - content.action.edit
+    - search.suggest
+    - search.highlight
+  icon:
+    repo: fontawesome/brands/github
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - def_list
+  - tables
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - Get started:
+      - get-started/quickstart.md
+      - get-started/sandbox.md
+  - Concepts:
+      - concepts/authentication.md
+      - concepts/idempotency.md
+      - concepts/errors.md
+      - concepts/pagination.md
+      - concepts/webhooks.md
+  - Guides:
+      - guides/accept-a-payment.md
+      - guides/recurring-billing.md
+      - guides/handle-webhooks.md
+  - Security & compliance:
+      - security/data-classification.md
+      - security/pci-scope.md
+      - security/tokenization.md
+  - API reference: reference/api.md
+  - Changelog: changelog.md
+  - Contributing: contributing.md

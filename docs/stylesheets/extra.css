@@ -1,0 +1,32 @@
+/* Light, theme-consistent polish. Kept minimal on purpose —
+   the point is to show I can extend a theme without fighting it. */
+
+:root {
+  /* Warm caramel — Pudgy's coat. Dark enough to keep header text legible. */
+  --md-primary-fg-color:        #9c6228;
+  --md-primary-fg-color--light: #c5853f;
+  --md-primary-fg-color--dark:  #774a1c;
+  --md-accent-fg-color:         #c8772e;
+}
+
+.hero {
+  padding: 2.4rem 0 1.2rem;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  margin-bottom: 1.6rem;
+}
+.hero h1 { font-weight: 800; letter-spacing: -0.02em; margin: 0 0 .4rem; }
+.hero p.tagline {
+  font-size: .95rem; color: var(--md-default-fg-color--light);
+  max-width: 46rem; margin: 0;
+}
+
+.md-typeset .grid.cards > :is(ul, ol) > li { border-radius: .6rem; }
+
+.verb {
+  display: inline-block; font-family: var(--md-code-font-family);
+  font-size: .72rem; font-weight: 700; letter-spacing: .03em;
+  padding: .12rem .45rem; border-radius: .35rem; color: #fff; vertical-align: middle;
+}
+.verb.get    { background: #2e7d32; }
+.verb.post   { background: #1565c0; }
+.verb.delete { background: #c62828; }

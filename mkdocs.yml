@@ -6,7 +6,7 @@ site_url: https://jamiezolan.dev/
 # Repo links surface an "edit this page" button — a visible docs-as-code signal.
 # Replace <your-username> with your GitHub handle once the repo exists.
 repo_name: your-username/jamiezolan.dev
-repo_url: https://github.com/your-username/jamiezolan.dev
+repo_url: https://github.com/jamiezolan/jamiezolan.dev
 edit_uri: edit/main/docs/
 
 theme:
